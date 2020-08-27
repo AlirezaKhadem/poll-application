@@ -13,7 +13,8 @@ def index(request):
     context = {
         'latest_question_list': latest_question_list,
     }
-    return HttpResponse(template.render(context, request))
+    # return HttpResponse(template.render(context, request))
+    return render(request, template_name='polls/index.html', context=context)
 
 
 def detail(request, question_id):
