@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from .models import Question
 from django.template import loader
 from .config import config
@@ -13,12 +13,20 @@ def index(request):
     context = {
         'latest_question_list': latest_question_list,
     }
-    # return HttpResponse(template.render(context, request))
-    return render(request, template_name='polls/index.html', context=context)
+    return HttpResponse(template.render(context, request))
+
+    # this is another way :) i think is better than prev method
+    # return render(request, template_name='polls/index.html', context=context)
 
 
 def detail(request, question_id):
-    return HttpResponse("You're looking at question %s." % question_id)
+    try:
+        question = Question.objects.get(pk=question_id)
+    except Question.DoesNotExist:
+        raise Http404('Question does not exist')
+
+    context = {'question': question}
+    return render(request, 'polls/detail.html', context)
 
 
 def results(request, question_id):
